@@ -1,0 +1,19 @@
+{
+	"name": "flarecog-deployment-scripts",
+	"version": "1.0.0",
+	"description": "Deployment automation scripts for FlareCog platform",
+	"type": "module",
+	"scripts": {
+		"create-namespace": "ts-node create-dispatch-namespace.ts",
+		"deploy-tenant": "ts-node deploy-tenant.ts",
+		"list-tenants": "ts-node list-tenants.ts"
+	},
+	"dependencies": {
+		"cloudflare": "^3.10.1"
+	},
+	"devDependencies": {
+		"@types/node": "^22.10.2",
+		"ts-node": "^10.9.2",
+		"typescript": "^5.7.2"
+	}
+}

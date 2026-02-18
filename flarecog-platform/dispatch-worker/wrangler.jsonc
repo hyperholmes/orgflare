@@ -1,0 +1,54 @@
+{
+	"$schema": "../../node_modules/wrangler/config-schema.json",
+	"name": "flarecog-dispatch",
+	"main": "src/index.ts",
+	"compatibility_date": "2024-11-23",
+	"upload_source_maps": true,
+	"dispatch_namespaces": [
+		{
+			"binding": "FLARECOG_NAMESPACE",
+			"namespace": "flarecog",
+			"experimental_remote": true
+		}
+	],
+	"observability": {
+		"enabled": true
+	},
+	"kv_namespaces": [
+		{
+			"binding": "TENANT_CONFIG",
+			"id": "YOUR_TENANT_CONFIG_KV_ID",
+			"preview_id": "YOUR_TENANT_CONFIG_KV_PREVIEW_ID"
+		},
+		{
+			"binding": "RATE_LIMITS",
+			"id": "YOUR_RATE_LIMITS_KV_ID",
+			"preview_id": "YOUR_RATE_LIMITS_KV_PREVIEW_ID"
+		}
+	],
+	"d1_databases": [
+		{
+			"binding": "ANALYTICS_DB",
+			"database_name": "flarecog_analytics",
+			"database_id": "YOUR_ANALYTICS_DB_ID"
+		}
+	],
+	"vars": {
+		"PLATFORM_NAME": "FlareCog Multi-Tenant Platform",
+		"BASE_DOMAIN": "flarecog.ai",
+		"DEFAULT_RATE_LIMIT": "1000",
+		"REQUIRE_AUTH": "true"
+	},
+	"env": {
+		"development": {
+			"vars": {
+				"REQUIRE_AUTH": "false"
+			}
+		},
+		"production": {
+			"vars": {
+				"REQUIRE_AUTH": "true"
+			}
+		}
+	}
+}

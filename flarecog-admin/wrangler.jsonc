@@ -1,0 +1,42 @@
+{
+	"$schema": "../node_modules/wrangler/config-schema.json",
+	"name": "flarecog-admin",
+	"main": "./dist/_worker.js",
+	"assets": {
+		"directory": "./dist"
+	},
+	"compatibility_date": "2025-04-01",
+	"compatibility_flags": ["nodejs_compat"],
+	"observability": {
+		"enabled": true
+	},
+	"upload_source_maps": true,
+	"d1_databases": [
+		{
+			"binding": "DB",
+			"database_name": "flarecog-platform",
+			"database_id": "REPLACE_WITH_YOUR_DATABASE_ID"
+		}
+	],
+	"workflows": [
+		{
+			"name": "flarecog-cognitive-workflow",
+			"binding": "COGNITIVE_WORKFLOW",
+			"class_name": "CognitiveWorkflow"
+		}
+	],
+	"durable_objects": {
+		"bindings": [
+			{
+				"name": "ATOMSPACE",
+				"class_name": "AtomSpace",
+				"script_name": "flarecog-user-worker"
+			},
+			{
+				"name": "MIND_AGENT",
+				"class_name": "MindAgent",
+				"script_name": "flarecog-user-worker"
+			}
+		]
+	}
+}

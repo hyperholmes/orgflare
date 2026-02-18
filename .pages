@@ -1,0 +1,7 @@
+{
+  "build": {
+    "command": "cd flarecog && pnpm install && pnpm run build",
+    "cwd": "flarecog",
+    "watch_paths": ["flarecog/**"]
+  }
+}

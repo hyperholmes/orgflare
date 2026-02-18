@@ -1,0 +1,58 @@
+{
+	"$schema": "node_modules/wrangler/config-schema.json",
+	"name": "flarecog",
+	"main": "./flarecog/src/index.ts",
+	"compatibility_date": "2025-10-08",
+	"compatibility_flags": ["nodejs_compat"],
+	"node_module_rules": [
+		{
+			"type": "CompiledWasm",
+			"glob": ["**/*.wasm"]
+		}
+	],
+	"resolve": {
+		"modules": ["./flarecog/node_modules", "./node_modules"]
+	},
+	"observability": {
+		"enabled": true
+	},
+	"upload_source_maps": true,
+	"migrations": [
+		{
+			"tag": "v1",
+			"new_sqlite_classes": ["AtomSpace", "MindAgent"]
+		}
+	],
+	"durable_objects": {
+		"bindings": [
+			{
+				"name": "ATOMSPACE",
+				"class_name": "AtomSpace"
+			},
+			{
+				"name": "MIND_AGENT",
+				"class_name": "MindAgent"
+			}
+		]
+	},
+	"d1_databases": [
+		{
+			"binding": "COGNITIVE_DB",
+			"database_name": "cogflare-cognitive-db",
+			"database_id": "placeholder-database-id"
+		}
+	],
+	"kv_namespaces": [
+		{
+			"binding": "ATOM_CACHE",
+			"id": "placeholder-kv-id"
+		}
+	],
+	"ai": {
+		"binding": "AI"
+	},
+	"vars": {
+		"ATOMSPACE_MODE": "development"
+	}
+}
+

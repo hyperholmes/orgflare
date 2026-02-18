@@ -1,0 +1,217 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "flarecog",
+  "main": "./src/index.ts",
+  "compatibility_date": "2025-10-08",
+  "compatibility_flags": [
+    "nodejs_compat"
+  ],
+  "observability": {
+    "enabled": true
+  },
+  "upload_source_maps": true,
+  "migrations": [
+    {
+      "tag": "v1",
+      "new_sqlite_classes": [
+        "AtomSpace",
+        "MindAgent"
+      ]
+    },
+    {
+      "tag": "v6",
+      "new_sqlite_classes": [
+        "StorageNode",
+        "TenantAtomSpace"
+      ]
+    }
+  ],
+  "durable_objects": {
+    "bindings": [
+      {
+        "name": "ATOMSPACE",
+        "class_name": "AtomSpace"
+      },
+      {
+        "name": "MIND_AGENT",
+        "class_name": "MindAgent"
+      },
+      {
+        "name": "WS_MANAGER",
+        "class_name": "WebSocketManager"
+      },
+      {
+        "name": "ALARM_SCHEDULER",
+        "class_name": "AlarmScheduler"
+      },
+      {
+        "name": "TENANT_ATOMSPACE_DO",
+        "class_name": "TenantAtomSpace"
+      }
+    ]
+  },
+  "d1_databases": [
+    {
+      "binding": "COGNITIVE_DB",
+      "database_name": "cogflare-cognitive-db",
+      "database_id": "8b12428e-3a63-4c88-a399-32c68a18c995"
+    },
+    {
+      "binding": "D1_COORDINATION",
+      "database_name": "flarecog-coordination-db",
+      "database_id": "placeholder-create-in-cloudflare-dashboard"
+    }
+  ],
+  "kv_namespaces": [
+    {
+      "binding": "ATOM_CACHE",
+      "id": "5c8063c1ce494e978e0e84a57867dcc0"
+    },
+    {
+      "binding": "COORDINATION_CACHE",
+      "id": "placeholder-coordination-cache"
+    },
+    {
+      "binding": "ATTENTION_CACHE",
+      "id": "placeholder-attention-cache"
+    },
+    {
+      "binding": "VISION_CACHE",
+      "id": "placeholder-vision-cache"
+    },
+    {
+      "binding": "STORAGE_CACHE",
+      "id": "placeholder-storage-cache"
+    },
+    {
+      "binding": "QUEUE_STATS",
+      "id": "placeholder-queue-stats"
+    },
+    {
+      "binding": "SYNERGY_STATE",
+      "id": "placeholder-synergy-state"
+    },
+    {
+      "binding": "ECHO_STATE",
+      "id": "placeholder-echo-state"
+    },
+    {
+      "binding": "KV_WARM_STORAGE",
+      "id": "placeholder-kv-warm-storage"
+    },
+    {
+      "binding": "STORAGE_METADATA",
+      "id": "placeholder-storage-metadata"
+    },
+    {
+      "binding": "MOSES_STATE",
+      "id": "placeholder-moses-state"
+    },
+    {
+      "binding": "PLN_CACHE",
+      "id": "placeholder-pln-cache"
+    },
+    {
+      "binding": "SENSORIMOTOR_STATE",
+      "id": "placeholder-sensorimotor-state"
+    },
+    {
+      "binding": "MEMORY_STORE",
+      "id": "placeholder-memory-store"
+    },
+    {
+      "binding": "INSTANCE_REGISTRY",
+      "id": "placeholder-instance-registry"
+    },
+    {
+      "binding": "TENANT_REGISTRY",
+      "id": "placeholder-tenant-registry"
+    },
+    {
+      "binding": "USAGE_TRACKER",
+      "id": "placeholder-usage-tracker"
+    },
+    {
+      "binding": "SHARED_KNOWLEDGE",
+      "id": "placeholder-shared-knowledge"
+    },
+    {
+      "binding": "TASK_RESULTS",
+      "id": "placeholder-task-results"
+    }
+  ],
+  "queues": {
+    "producers": [
+      {
+        "queue": "flarecog-cognitive-queue",
+        "binding": "COGNITIVE_QUEUE"
+      },
+      {
+        "queue": "flarecog-priority-queue",
+        "binding": "PRIORITY_QUEUE"
+      },
+      {
+        "queue": "flarecog-inference-queue",
+        "binding": "INFERENCE_QUEUE"
+      },
+      {
+        "queue": "flarecog-consolidation-queue",
+        "binding": "CONSOLIDATION_QUEUE"
+      },
+      {
+        "queue": "flarecog-coordination-queue",
+        "binding": "COORDINATION_QUEUE"
+      }
+    ],
+    "consumers": [
+      {
+        "queue": "flarecog-cognitive-queue",
+        "max_batch_size": 10,
+        "max_batch_timeout": 30
+      },
+      {
+        "queue": "flarecog-inference-queue",
+        "max_batch_size": 5,
+        "max_batch_timeout": 60
+      },
+      {
+        "queue": "flarecog-consolidation-queue",
+        "max_batch_size": 20,
+        "max_batch_timeout": 60
+      },
+      {
+        "queue": "flarecog-coordination-queue",
+        "max_batch_size": 10,
+        "max_batch_timeout": 30
+      }
+    ]
+  },
+  "r2_buckets": [
+    {
+      "binding": "R2_ATOMSPACE",
+      "bucket_name": "flarecog-atomspace-storage"
+    },
+    {
+      "binding": "R2_COLD_STORAGE",
+      "bucket_name": "flarecog-cold-storage"
+    }
+  ],
+  "vectorize": [
+    {
+      "binding": "VECTORIZE",
+      "index_name": "flarecog-semantic-index"
+    }
+  ],
+  "ai": {
+    "binding": "AI"
+  },
+  "vars": {
+    "ATOMSPACE_MODE": "development",
+    "ENVIRONMENT": "development",
+    "LOG_LEVEL": "info",
+    "ECAN_DECAY_RATE": "0.1",
+    "ECAN_SPREAD_FRACTION": "0.3",
+    "SYNERGY_CYCLE_TIMEOUT": "5000",
+    "ECHO_AWARENESS_THRESHOLD": "0.7"
+  }
+}

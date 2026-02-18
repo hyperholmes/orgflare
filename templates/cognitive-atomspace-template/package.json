@@ -1,0 +1,42 @@
+{
+	"name": "cognitive-atomspace-template",
+	"description": "Cognitive computing with AtomSpace hypergraph knowledge representation on Cloudflare Workers",
+	"private": true,
+	"cloudflare": {
+		"label": "Cognitive AtomSpace",
+		"products": [
+			"Workers",
+			"Durable Objects",
+			"Workers AI"
+		],
+		"categories": [
+			"ai",
+			"storage"
+		],
+		"docs_url": "https://developers.cloudflare.com/durable-objects/",
+		"preview_icon_url": "https://imagedelivery.net/wSMYJvS3Xw-n339CbDyDIA/b1123d34-c3a4-446c-6574-8b67c7ac4400/public",
+		"preview_image_url": "https://imagedelivery.net/wSMYJvS3Xw-n339CbDyDIA/5012f8d4-59bc-4f1d-fb7e-7e6269d3da00/preview",
+		"publish": true
+	},
+	"devDependencies": {
+		"@cloudflare/vitest-pool-workers": "0.8.44",
+		"@cloudflare/workers-types": "^4.20250425.0",
+		"@types/node": "24.0.4",
+		"typescript": "5.8.3",
+		"vitest": "3.2.4",
+		"wrangler": "4.21.x"
+	},
+	"dependencies": {
+		"hono": "4.8.2",
+		"nanoid": "5.1.5",
+		"zod": "3.25.67"
+	},
+	"scripts": {
+		"cf-typegen": "wrangler types",
+		"check": "tsc && wrangler deploy --dry-run",
+		"deploy": "wrangler deploy",
+		"dev": "wrangler dev",
+		"start": "wrangler dev",
+		"test": "vitest"
+	}
+}

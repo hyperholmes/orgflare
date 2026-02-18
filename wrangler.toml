@@ -1,0 +1,36 @@
+name = "flarecog"
+main = "./flarecog/src/index.ts"
+compatibility_date = "2025-10-08"
+compatibility_flags = ["nodejs_compat"]
+
+[observability]
+enabled = true
+
+upload_source_maps = true
+
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["AtomSpace", "MindAgent"]
+
+[[durable_objects.bindings]]
+name = "ATOMSPACE"
+class_name = "AtomSpace"
+
+[[durable_objects.bindings]]
+name = "MIND_AGENT"
+class_name = "MindAgent"
+
+[[d1_databases]]
+binding = "COGNITIVE_DB"
+database_name = "cogflare-cognitive-db"
+database_id = "8b12428e-3a63-4c88-a399-32c68a18c995"
+
+[[kv_namespaces]]
+binding = "ATOM_CACHE"
+id = "5c8063c1ce494e978e0e84a57867dcc0"
+
+[ai]
+binding = "AI"
+
+[vars]
+ATOMSPACE_MODE = "development"

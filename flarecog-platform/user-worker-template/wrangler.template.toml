@@ -1,0 +1,48 @@
+# FlareCog User Worker Template Configuration
+# 
+# This template is used to generate tenant-specific Worker configurations.
+# Replace {TENANT_ID} and {TENANT_NAME} with actual tenant values.
+
+name = "flarecog-user-{TENANT_ID}"
+main = "src/index.ts"
+compatibility_date = "2024-11-23"
+
+# Durable Objects bindings
+[durable_objects]
+bindings = [
+  { name = "ATOMSPACE", class_name = "AtomSpace" },
+  { name = "MIND_AGENT", class_name = "MindAgent" }
+]
+
+# Durable Objects migrations
+[[migrations]]
+tag = "v1"
+new_classes = ["AtomSpace", "MindAgent"]
+
+# D1 database for cognitive data
+[[d1_databases]]
+binding = "COGNITIVE_DB"
+database_name = "flarecog_{TENANT_ID}"
+database_id = "{D1_DATABASE_ID}"  # Replace with actual D1 database ID
+
+# KV namespace for atom caching
+[[kv_namespaces]]
+binding = "ATOM_CACHE"
+id = "{KV_NAMESPACE_ID}"  # Replace with actual KV namespace ID
+
+# CloudFlare AI binding
+[ai]
+binding = "AI"
+
+# Tenant-specific environment variables
+[vars]
+TENANT_ID = "{TENANT_ID}"
+TENANT_NAME = "{TENANT_NAME}"
+
+# Development configuration
+[env.development]
+vars = { DEBUG = "true" }
+
+# Production configuration
+[env.production]
+vars = { DEBUG = "false" }

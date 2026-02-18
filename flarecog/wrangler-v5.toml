@@ -1,0 +1,169 @@
+# FlareCog v5.0 - Complete OpenCog AGI on CloudFlare Workers
+# Full configuration with all cognitive systems and optimizations
+
+name = "flarecog-v5"
+main = "src/index-enhanced-v5.ts"
+compatibility_date = "2024-12-01"
+compatibility_flags = ["nodejs_compat"]
+
+# Build configuration
+[build]
+command = "pnpm build"
+
+# Development settings
+[dev]
+port = 8787
+local_protocol = "http"
+
+# ==================== Durable Objects ====================
+
+[durable_objects]
+bindings = [
+  { name = "ATOMSPACE", class_name = "AtomSpace" },
+  { name = "MIND_AGENT", class_name = "MindAgent" },
+  { name = "WS_MANAGER", class_name = "CognitiveWebSocketManager" },
+  { name = "ALARM_SCHEDULER", class_name = "CoalescedAlarmScheduler" }
+]
+
+[[migrations]]
+tag = "v5"
+new_classes = ["AtomSpace", "MindAgent", "CognitiveWebSocketManager", "CoalescedAlarmScheduler"]
+
+# ==================== D1 Database ====================
+
+[[d1_databases]]
+binding = "D1_COORDINATION"
+database_name = "flarecog-coordination"
+database_id = "YOUR_D1_DATABASE_ID"
+
+# ==================== Hyperdrive (D1 Acceleration) ====================
+
+[[hyperdrive]]
+binding = "HYPERDRIVE"
+id = "YOUR_HYPERDRIVE_ID"
+
+# ==================== R2 Storage ====================
+
+[[r2_buckets]]
+binding = "R2_ATOMSPACE"
+bucket_name = "flarecog-atomspace"
+
+# ==================== KV Namespaces ====================
+
+# Core cognitive KV stores
+[[kv_namespaces]]
+binding = "ATTENTION_CACHE"
+id = "YOUR_KV_ID_ATTENTION"
+
+[[kv_namespaces]]
+binding = "VISION_CACHE"
+id = "YOUR_KV_ID_VISION"
+
+[[kv_namespaces]]
+binding = "COORDINATION_CACHE"
+id = "YOUR_KV_ID_COORDINATION"
+
+[[kv_namespaces]]
+binding = "STORAGE_CACHE"
+id = "YOUR_KV_ID_STORAGE"
+
+[[kv_namespaces]]
+binding = "QUEUE_STATS"
+id = "YOUR_KV_ID_QUEUE"
+
+[[kv_namespaces]]
+binding = "SYNERGY_STATE"
+id = "YOUR_KV_ID_SYNERGY"
+
+[[kv_namespaces]]
+binding = "ECHO_STATE"
+id = "YOUR_KV_ID_ECHO"
+
+# New v5 KV stores
+[[kv_namespaces]]
+binding = "MOSES_STATE"
+id = "YOUR_KV_ID_MOSES"
+
+[[kv_namespaces]]
+binding = "PLN_CACHE"
+id = "YOUR_KV_ID_PLN"
+
+[[kv_namespaces]]
+binding = "SENSORIMOTOR_STATE"
+id = "YOUR_KV_ID_SENSORIMOTOR"
+
+[[kv_namespaces]]
+binding = "MEMORY_STORE"
+id = "YOUR_KV_ID_MEMORY"
+
+[[kv_namespaces]]
+binding = "INSTANCE_REGISTRY"
+id = "YOUR_KV_ID_INSTANCES"
+
+# ==================== Queues ====================
+
+[[queues.producers]]
+queue = "cognitive-tasks"
+binding = "COGNITIVE_QUEUE"
+
+[[queues.producers]]
+queue = "priority-tasks"
+binding = "PRIORITY_QUEUE"
+
+[[queues.consumers]]
+queue = "cognitive-tasks"
+max_batch_size = 100
+max_batch_timeout = 5
+max_retries = 3
+
+[[queues.consumers]]
+queue = "priority-tasks"
+max_batch_size = 10
+max_batch_timeout = 1
+max_retries = 5
+
+# ==================== Workers AI ====================
+
+[ai]
+binding = "AI"
+
+# ==================== Vectorize ====================
+
+[[vectorize]]
+binding = "VECTORIZE"
+index_name = "flarecog-semantic"
+
+# ==================== Environment Variables ====================
+
+[vars]
+ENVIRONMENT = "production"
+LOG_LEVEL = "info"
+ECAN_DECAY_RATE = "0.1"
+ECAN_SPREAD_FRACTION = "0.3"
+SYNERGY_CYCLE_TIMEOUT = "5000"
+ECHO_AWARENESS_THRESHOLD = "0.6"
+
+# ==================== Limits ====================
+
+[limits]
+cpu_ms = 30000
+
+# ==================== Triggers ====================
+
+# Cron triggers for periodic maintenance
+[triggers]
+crons = [
+  "*/5 * * * *",  # Every 5 minutes - attention decay cycle
+  "0 * * * *",    # Every hour - memory consolidation
+  "0 0 * * *",    # Daily - garbage collection and cleanup
+  "0 */6 * * *"   # Every 6 hours - deep consolidation
+]
+
+# ==================== Observability ====================
+
+[observability]
+enabled = true
+
+[observability.logs]
+enabled = true
+invocation_logs = true

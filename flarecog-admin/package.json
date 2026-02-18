@@ -1,0 +1,33 @@
+{
+	"name": "flarecog-admin",
+	"version": "1.0.0",
+	"description": "FlareCog Platform Admin Dashboard",
+	"type": "module",
+	"scripts": {
+		"dev": "astro dev",
+		"build": "astro build",
+		"preview": "astro preview",
+		"deploy": "astro build && wrangler deploy",
+		"wrangler:dev": "wrangler dev",
+		"db:migrate": "wrangler d1 migrations apply flarecog-platform --local",
+		"db:migrate:remote": "wrangler d1 migrations apply flarecog-platform --remote"
+	},
+	"dependencies": {
+		"@astrojs/cloudflare": "^12.1.0",
+		"@astrojs/react": "^4.1.0",
+		"@astrojs/tailwind": "^6.1.0",
+		"@tanstack/react-table": "^8.20.6",
+		"astro": "^5.1.6",
+		"react": "^19.0.0",
+		"react-dom": "^19.0.0",
+		"tailwindcss": "^3.4.17",
+		"zod": "^3.24.1"
+	},
+	"devDependencies": {
+		"@cloudflare/workers-types": "^4.20250110.0",
+		"@types/react": "^19.0.6",
+		"@types/react-dom": "^19.0.3",
+		"typescript": "^5.7.2",
+		"wrangler": "^3.103.0"
+	}
+}

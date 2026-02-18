@@ -1,0 +1,21 @@
+{
+	"name": "flarecog-user-worker",
+	"version": "2.0.0",
+	"description": "AI-enhanced FlareCog user Worker template for multi-tenant cognitive platform",
+	"main": "src/index.ts",
+	"scripts": {
+		"dev": "wrangler dev",
+		"deploy": "wrangler deploy"
+	},
+	"dependencies": {
+		"hono": "^4.7.11",
+		"ai": "^4.2.0",
+		"workers-ai-provider": "^0.2.0",
+		"zod": "^3.24.1"
+	},
+	"devDependencies": {
+		"@cloudflare/workers-types": "^4.20250110.0",
+		"typescript": "^5.7.2",
+		"wrangler": "^3.103.0"
+	}
+}

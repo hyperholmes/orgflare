@@ -1,0 +1,21 @@
+{
+  "kv_namespaces": {
+    "flarecog-storage-metadata": "f8426d8c65f1496a8fa7ca6f91ab272c",
+    "flarecog-task-results": "5267bffe50514722a43992254079523e",
+    "flarecog-tenant-registry": "55c57615ccc447b298dbcb072bbf18ca",
+    "flarecog-usage-tracker": "6a8f8b34864248399ef393297b5f4d50",
+    "flarecog-shared-knowledge": "71ef302917254218a08f4b77b1860efe",
+    "flarecog-warm-storage": "ed860d79d02444feb287f2f56ce3d992"
+  },
+  "r2_buckets": {
+    "flarecog-cold-storage": "flarecog-cold-storage"
+  },
+  "queues": {
+    "flarecog-cognitive-queue": "87f8a10f0f9c4e519ab4f884f7d55c0a",
+    "flarecog-priority-queue": "214933d1f8b8494b898f825057f1b993",
+    "flarecog-inference-queue": "eb53e2d591f44ba8a89257368790d7a5",
+    "flarecog-consolidation-queue": "95662117b31f458db80cd3897b5932c1",
+    "flarecog-coordination-queue": "0059d54b2a1748348828507984ccdb9a",
+    "flarecog-dlq": "7d587469f6094f5c8fa59c77132a7049"
+  }
+}

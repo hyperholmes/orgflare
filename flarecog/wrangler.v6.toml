@@ -1,0 +1,331 @@
+# FlareCog v6.0 Configuration
+# OpenCog-CloudFlare Deep Integration Platform
+# Distributed AtomSpace with Optimal Grip and Cognitive Synergy
+
+name = "flarecog"
+main = "workers/app.ts"
+compatibility_date = "2024-11-01"
+
+# ==================== Durable Objects ====================
+
+[[durable_objects.bindings]]
+name = "ATOMSPACE"
+class_name = "AtomSpace"
+script_name = "flarecog"
+
+[[durable_objects.bindings]]
+name = "MIND_AGENT"
+class_name = "MindAgent"
+script_name = "flarecog"
+
+[[durable_objects.bindings]]
+name = "WS_MANAGER"
+class_name = "WSManager"
+script_name = "flarecog"
+
+[[durable_objects.bindings]]
+name = "ALARM_SCHEDULER"
+class_name = "AlarmScheduler"
+script_name = "flarecog"
+
+# v6.0: Multi-tenant AtomSpace isolation
+[[durable_objects.bindings]]
+name = "TENANT_ATOMSPACE_DO"
+class_name = "TenantAtomSpace"
+script_name = "flarecog"
+
+# ==================== R2 Storage ====================
+
+# Main AtomSpace storage
+[[r2_buckets]]
+binding = "R2_ATOMSPACE"
+bucket_name = "flarecog-atomspace"
+preview_bucket_name = "flarecog-atomspace-preview"
+
+# v6.0: Enhanced cold storage for low-attention atoms
+[[r2_buckets]]
+binding = "R2_COLD_STORAGE"
+bucket_name = "flarecog-cold-storage"
+preview_bucket_name = "flarecog-cold-storage-preview"
+
+# ==================== D1 Database ====================
+
+[[d1_databases]]
+binding = "D1_COORDINATION"
+database_name = "flarecog-coordination"
+database_id = "YOUR_D1_DATABASE_ID" # Replace with actual D1 database ID
+
+# ==================== Hyperdrive ====================
+
+[[hyperdrive]]
+binding = "HYPERDRIVE"
+id = "YOUR_HYPERDRIVE_ID" # Replace with actual Hyperdrive ID
+
+# ==================== KV Namespaces ====================
+
+# Core v5 KV namespaces
+[[kv_namespaces]]
+binding = "ATTENTION_CACHE"
+id = "YOUR_ATTENTION_CACHE_ID"
+preview_id = "YOUR_ATTENTION_CACHE_PREVIEW_ID"
+
+[[kv_namespaces]]
+binding = "VISION_CACHE"
+id = "YOUR_VISION_CACHE_ID"
+preview_id = "YOUR_VISION_CACHE_PREVIEW_ID"
+
+[[kv_namespaces]]
+binding = "COORDINATION_CACHE"
+id = "YOUR_COORDINATION_CACHE_ID"
+preview_id = "YOUR_COORDINATION_CACHE_PREVIEW_ID"
+
+[[kv_namespaces]]
+binding = "STORAGE_CACHE"
+id = "YOUR_STORAGE_CACHE_ID"
+preview_id = "YOUR_STORAGE_CACHE_PREVIEW_ID"
+
+[[kv_namespaces]]
+binding = "QUEUE_STATS"
+id = "YOUR_QUEUE_STATS_ID"
+preview_id = "YOUR_QUEUE_STATS_PREVIEW_ID"
+
+[[kv_namespaces]]
+binding = "SYNERGY_STATE"
+id = "YOUR_SYNERGY_STATE_ID"
+preview_id = "YOUR_SYNERGY_STATE_PREVIEW_ID"
+
+[[kv_namespaces]]
+binding = "ECHO_STATE"
+id = "YOUR_ECHO_STATE_ID"
+preview_id = "YOUR_ECHO_STATE_PREVIEW_ID"
+
+[[kv_namespaces]]
+binding = "MOSES_STATE"
+id = "YOUR_MOSES_STATE_ID"
+preview_id = "YOUR_MOSES_STATE_PREVIEW_ID"
+
+[[kv_namespaces]]
+binding = "PLN_CACHE"
+id = "YOUR_PLN_CACHE_ID"
+preview_id = "YOUR_PLN_CACHE_PREVIEW_ID"
+
+[[kv_namespaces]]
+binding = "SENSORIMOTOR_STATE"
+id = "YOUR_SENSORIMOTOR_STATE_ID"
+preview_id = "YOUR_SENSORIMOTOR_STATE_PREVIEW_ID"
+
+[[kv_namespaces]]
+binding = "MEMORY_STORE"
+id = "YOUR_MEMORY_STORE_ID"
+preview_id = "YOUR_MEMORY_STORE_PREVIEW_ID"
+
+[[kv_namespaces]]
+binding = "INSTANCE_REGISTRY"
+id = "YOUR_INSTANCE_REGISTRY_ID"
+preview_id = "YOUR_INSTANCE_REGISTRY_PREVIEW_ID"
+
+# v6.0: New KV namespaces for enhanced features
+
+[[kv_namespaces]]
+binding = "STORAGE_METADATA"
+id = "YOUR_STORAGE_METADATA_ID"
+preview_id = "YOUR_STORAGE_METADATA_PREVIEW_ID"
+
+[[kv_namespaces]]
+binding = "TASK_RESULTS"
+id = "YOUR_TASK_RESULTS_ID"
+preview_id = "YOUR_TASK_RESULTS_PREVIEW_ID"
+
+[[kv_namespaces]]
+binding = "TENANT_REGISTRY"
+id = "YOUR_TENANT_REGISTRY_ID"
+preview_id = "YOUR_TENANT_REGISTRY_PREVIEW_ID"
+
+[[kv_namespaces]]
+binding = "USAGE_TRACKER"
+id = "YOUR_USAGE_TRACKER_ID"
+preview_id = "YOUR_USAGE_TRACKER_PREVIEW_ID"
+
+[[kv_namespaces]]
+binding = "SHARED_KNOWLEDGE"
+id = "YOUR_SHARED_KNOWLEDGE_ID"
+preview_id = "YOUR_SHARED_KNOWLEDGE_PREVIEW_ID"
+
+# v6.0: Warm tier storage for medium-attention atoms
+[[kv_namespaces]]
+binding = "KV_WARM_STORAGE"
+id = "YOUR_KV_WARM_STORAGE_ID"
+preview_id = "YOUR_KV_WARM_STORAGE_PREVIEW_ID"
+
+# ==================== Queues ====================
+
+# Core cognitive queue
+[[queues.producers]]
+binding = "COGNITIVE_QUEUE"
+queue = "flarecog-cognitive-queue"
+
+[[queues.consumers]]
+queue = "flarecog-cognitive-queue"
+max_batch_size = 10
+max_batch_timeout = 30
+max_retries = 3
+dead_letter_queue = "flarecog-dlq"
+
+# Priority queue for urgent tasks
+[[queues.producers]]
+binding = "PRIORITY_QUEUE"
+queue = "flarecog-priority-queue"
+
+[[queues.consumers]]
+queue = "flarecog-priority-queue"
+max_batch_size = 5
+max_batch_timeout = 10
+max_retries = 3
+dead_letter_queue = "flarecog-dlq"
+
+# v6.0: Specialized queues for different cognitive tasks
+
+[[queues.producers]]
+binding = "INFERENCE_QUEUE"
+queue = "flarecog-inference-queue"
+
+[[queues.consumers]]
+queue = "flarecog-inference-queue"
+max_batch_size = 10
+max_batch_timeout = 60
+max_retries = 3
+dead_letter_queue = "flarecog-dlq"
+
+[[queues.producers]]
+binding = "CONSOLIDATION_QUEUE"
+queue = "flarecog-consolidation-queue"
+
+[[queues.consumers]]
+queue = "flarecog-consolidation-queue"
+max_batch_size = 20
+max_batch_timeout = 120
+max_retries = 2
+dead_letter_queue = "flarecog-dlq"
+
+[[queues.producers]]
+binding = "COORDINATION_QUEUE"
+queue = "flarecog-coordination-queue"
+
+[[queues.consumers]]
+queue = "flarecog-coordination-queue"
+max_batch_size = 10
+max_batch_timeout = 60
+max_retries = 3
+dead_letter_queue = "flarecog-dlq"
+
+# ==================== Workers AI ====================
+
+[ai]
+binding = "AI"
+
+# ==================== Vectorize ====================
+
+[[vectorize]]
+binding = "VECTORIZE"
+index_name = "flarecog-embeddings"
+
+# ==================== Analytics ====================
+
+[[analytics_engine_datasets]]
+binding = "ANALYTICS"
+
+# ==================== Environment Variables ====================
+
+[vars]
+ENVIRONMENT = "production"
+LOG_LEVEL = "info"
+
+# ECAN (Economic Attention Network) parameters
+ECAN_DECAY_RATE = "0.1"
+ECAN_SPREAD_FRACTION = "0.5"
+
+# Synergy parameters
+SYNERGY_CYCLE_TIMEOUT = "30000"
+
+# Echo awareness parameters
+ECHO_AWARENESS_THRESHOLD = "0.7"
+
+# v6.0: Multi-tenant parameters
+MAX_ATOMSPACES_PER_TENANT = "100"
+DEFAULT_ATOMSPACE_QUOTA = "10000000"
+
+# v6.0: Tiered storage parameters
+HOT_TIER_STI_THRESHOLD = "80"
+WARM_TIER_STI_THRESHOLD = "40"
+COLD_TIER_STI_THRESHOLD = "10"
+EVICTION_AGE_DAYS = "7"
+
+# v6.0: Relevance realization parameters
+RELEVANCE_GOAL_WEIGHT = "0.3"
+RELEVANCE_CONTEXT_WEIGHT = "0.2"
+RELEVANCE_NOVELTY_WEIGHT = "0.2"
+RELEVANCE_COHERENCE_WEIGHT = "0.15"
+RELEVANCE_PRAGMATIC_WEIGHT = "0.15"
+
+# ==================== Development Environment ====================
+
+[env.development]
+name = "flarecog-dev"
+vars = { 
+  ENVIRONMENT = "development", 
+  LOG_LEVEL = "debug",
+  ECAN_DECAY_RATE = "0.05",
+  HOT_TIER_STI_THRESHOLD = "70",
+  WARM_TIER_STI_THRESHOLD = "30",
+  COLD_TIER_STI_THRESHOLD = "5"
+}
+
+[env.development.d1_databases]
+binding = "D1_COORDINATION"
+database_name = "flarecog-coordination-dev"
+database_id = "YOUR_DEV_D1_DATABASE_ID"
+
+# ==================== Staging Environment ====================
+
+[env.staging]
+name = "flarecog-staging"
+vars = { 
+  ENVIRONMENT = "staging", 
+  LOG_LEVEL = "info",
+  MAX_ATOMSPACES_PER_TENANT = "50"
+}
+
+[env.staging.d1_databases]
+binding = "D1_COORDINATION"
+database_name = "flarecog-coordination-staging"
+database_id = "YOUR_STAGING_D1_DATABASE_ID"
+
+# ==================== Routes ====================
+
+routes = [
+  { pattern = "flarecog.com/*", zone_name = "flarecog.com" },
+  { pattern = "*.flarecog.com/*", zone_name = "flarecog.com" },
+  { pattern = "api.flarecog.com/*", zone_name = "flarecog.com" }
+]
+
+# ==================== Limits and Performance ====================
+
+limits = { cpu_ms = 50000 }
+
+[placement]
+mode = "smart"
+
+# ==================== Observability ====================
+
+[observability]
+enabled = true
+head_sampling_rate = 1.0
+
+# ==================== Build Configuration ====================
+
+[build]
+command = "pnpm run build"
+watch_dirs = ["src"]
+
+[build.upload]
+format = "service-worker"

@@ -1,0 +1,207 @@
+---
+import Layout from "@/layouts/Layout.astro";
+
+const API_TOKEN = import.meta.env.API_TOKEN;
+
+// Fetch platform metrics
+const metricsResponse = await fetch(
+	`${Astro.url.origin}/api/metrics?platform=true&days=30`,
+	{
+		headers: {
+			Authorization: `Bearer ${API_TOKEN}`,
+		},
+	},
+);
+
+const { summary: metrics } = await metricsResponse.json();
+
+// Fetch revenue data
+const revenueResponse = await fetch(
+	`${Astro.url.origin}/api/billing?revenue=true&days=30`,
+	{
+		headers: {
+			Authorization: `Bearer ${API_TOKEN}`,
+		},
+	},
+);
+
+const { revenue } = await revenueResponse.json();
+
+// Fetch tenants
+const tenantsResponse = await fetch(`${Astro.url.origin}/api/tenants`, {
+	headers: {
+		Authorization: `Bearer ${API_TOKEN}`,
+	},
+});
+
+const { tenants } = await tenantsResponse.json();
+---
+
+<Layout title="Dashboard">
+	<div class="space-y-6">
+		<div>
+			<h1 class="text-3xl font-bold">Platform Dashboard</h1>
+			<p class="text-muted-foreground mt-1">
+				Overview of FlareCog platform metrics and activity
+			</p>
+		</div>
+
+		<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+			<div class="bg-card border rounded-lg p-6">
+				<div class="text-sm font-medium text-muted-foreground">
+					Active Tenants
+				</div>
+				<div class="text-3xl font-bold mt-2">
+					{metrics.active_tenants || 0}
+				</div>
+				<p class="text-xs text-muted-foreground mt-2">
+					Last 30 days
+				</p>
+			</div>
+
+			<div class="bg-card border rounded-lg p-6">
+				<div class="text-sm font-medium text-muted-foreground">
+					Total Operations
+				</div>
+				<div class="text-3xl font-bold mt-2">
+					{(metrics.total_operations || 0).toLocaleString()}
+				</div>
+				<p class="text-xs text-muted-foreground mt-2">
+					Last 30 days
+				</p>
+			</div>
+
+			<div class="bg-card border rounded-lg p-6">
+				<div class="text-sm font-medium text-muted-foreground">
+					Atoms Created
+				</div>
+				<div class="text-3xl font-bold mt-2">
+					{(metrics.total_atoms_created || 0).toLocaleString()}
+				</div>
+				<p class="text-xs text-muted-foreground mt-2">
+					Last 30 days
+				</p>
+			</div>
+
+			<div class="bg-card border rounded-lg p-6">
+				<div class="text-sm font-medium text-muted-foreground">
+					Inferences
+				</div>
+				<div class="text-3xl font-bold mt-2">
+					{(metrics.total_inferences || 0).toLocaleString()}
+				</div>
+				<p class="text-xs text-muted-foreground mt-2">
+					Last 30 days
+				</p>
+			</div>
+		</div>
+
+		<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+			<div class="bg-card border rounded-lg p-6">
+				<h2 class="text-xl font-semibold mb-4">
+					Revenue Overview
+				</h2>
+				<div class="space-y-4">
+					<div>
+						<div class="text-sm text-muted-foreground">
+							Total Revenue (30d)
+						</div>
+						<div class="text-2xl font-bold">
+							${((revenue.total_revenue || 0) / 100).toFixed(2)}
+						</div>
+					</div>
+					<div>
+						<div class="text-sm text-muted-foreground">
+							New Subscriptions
+						</div>
+						<div class="text-xl font-semibold">
+							{revenue.new_subscriptions || 0}
+						</div>
+					</div>
+					<div>
+						<div class="text-sm text-muted-foreground">
+							Cancelled Subscriptions
+						</div>
+						<div class="text-xl font-semibold">
+							{revenue.cancelled_subscriptions || 0}
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="bg-card border rounded-lg p-6">
+				<h2 class="text-xl font-semibold mb-4">
+					Performance Metrics
+				</h2>
+				<div class="space-y-4">
+					<div>
+						<div class="text-sm text-muted-foreground">
+							Avg Response Time
+						</div>
+						<div class="text-2xl font-bold">
+							{Math.round(metrics.avg_response_time || 0)}ms
+						</div>
+					</div>
+					<div>
+						<div class="text-sm text-muted-foreground">
+							Success Rate
+						</div>
+						<div class="text-xl font-semibold">
+							{
+								metrics.total_operations > 0
+									? (
+											((metrics.successful_operations ||
+												0) /
+												metrics.total_operations) *
+											100
+										).toFixed(1)
+									: 0
+							}%
+						</div>
+					</div>
+					<div>
+						<div class="text-sm text-muted-foreground">
+							Failed Operations
+						</div>
+						<div class="text-xl font-semibold">
+							{metrics.failed_operations || 0}
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="bg-card border rounded-lg p-6">
+			<h2 class="text-xl font-semibold mb-4">Quick Actions</h2>
+			<div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+				<a
+					href="/admin/tenants"
+					class="p-4 border rounded-lg hover:bg-muted/50 transition-colors"
+				>
+					<div class="font-semibold">Manage Tenants</div>
+					<div class="text-sm text-muted-foreground mt-1">
+						View and manage all platform tenants
+					</div>
+				</a>
+				<a
+					href="/admin/metrics"
+					class="p-4 border rounded-lg hover:bg-muted/50 transition-colors"
+				>
+					<div class="font-semibold">View Metrics</div>
+					<div class="text-sm text-muted-foreground mt-1">
+						Analyze cognitive operations and performance
+					</div>
+				</a>
+				<a
+					href="/admin/billing"
+					class="p-4 border rounded-lg hover:bg-muted/50 transition-colors"
+				>
+					<div class="font-semibold">Billing & Revenue</div>
+					<div class="text-sm text-muted-foreground mt-1">
+						Track subscriptions and revenue
+					</div>
+				</a>
+			</div>
+		</div>
+	</div>
+</Layout>

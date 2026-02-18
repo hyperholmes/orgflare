@@ -1,0 +1,314 @@
+# FlareCog Production Configuration
+# Complete CloudFlare Worker bindings for OpenCog cognitive architecture
+
+name = "flarecog-production"
+main = "workers/app.ts"
+compatibility_date = "2025-11-24"
+account_id = "YOUR_ACCOUNT_ID"
+
+# Worker configuration
+workers_dev = false
+route = { pattern = "flarecog.yourdomain.com/*", zone_name = "yourdomain.com" }
+
+[build]
+command = "pnpm run build"
+
+[build.upload]
+format = "modules"
+main = "./dist/index.js"
+
+# ============================================================================
+# CRITICAL BINDINGS - Required for core functionality
+# ============================================================================
+
+# Durable Object: AtomSpace Instance
+# OpenCog Component: Core hypergraph knowledge representation
+# Priority: ⭐⭐⭐ Critical
+[[durable_objects.bindings]]
+name = "ATOMSPACE"
+class_name = "AtomSpace"
+script_name = "flarecog-production"
+
+[[durable_objects.bindings]]
+name = "AGGREGATION_AGENT"
+class_name = "AggregationAgent"
+script_name = "flarecog-production"
+
+[[migrations]]
+tag = "v1"
+new_classes = ["AtomSpace", "AggregationAgent"]
+
+# D1 Database: Global Coordination Layer
+# OpenCog Component: Distributed AtomSpace coordination, CogServer metadata
+# Priority: ⭐⭐⭐ Critical
+[[d1_databases]]
+binding = "DB"
+database_name = "flarecog-coordination"
+database_id = "YOUR_D1_DATABASE_ID"
+# Schema: See DEPLOYMENT_GUIDE.md for SQL initialization
+
+# R2 Bucket: Cold Storage (Tier 4)
+# OpenCog Component: Archived atoms, frozen knowledge (LTI < threshold)
+# Priority: ⭐⭐⭐ Critical
+[[r2_buckets]]
+binding = "COLD_STORAGE"
+bucket_name = "flarecog-cold-storage"
+preview_bucket_name = "flarecog-cold-storage-preview"
+# Lifecycle: Archive atoms with LTI < 10 after 30 days of inactivity
+
+# Workers AI: Cognitive Operations
+# OpenCog Component: PLN reasoning, embeddings, pattern recognition
+# Priority: ⭐⭐⭐ Critical
+[[ai]]
+binding = "AI"
+# Models used:
+# - @cf/baai/bge-base-en-v1.5 (embeddings)
+# - @cf/meta/llama-3.1-8b-instruct (reasoning)
+# - @cf/meta/llama-3.2-1b-instruct (fast inference)
+
+# ============================================================================
+# IMPORTANT BINDINGS - Recommended for production
+# ============================================================================
+
+# HyperDrive: StorageNode Backend
+# OpenCog Component: AtomSpace-PostgreSQL, distributed storage
+# Priority: ⭐⭐ Important
+[[hyperdrive]]
+binding = "POSTGRES"
+id = "YOUR_HYPERDRIVE_ID"
+# Connect to: PostgreSQL 15+ with atomspace-pgres schema
+# Use for: Warm tier storage, cross-region replication, SQL analytics
+
+# Vectorize Index: Semantic Search
+# OpenCog Component: Atom similarity search, concept clustering
+# Priority: ⭐⭐ Important
+[[vectorize]]
+binding = "VECTORIZE"
+index_name = "atom-embeddings"
+# Dimensions: 768 (matches bge-base-en-v1.5)
+# Metric: cosine
+# Use for: Semantic pattern matching, analogy discovery
+
+# Queue: MindAgent Orchestration
+# OpenCog Component: MindAgent scheduler, async cognitive tasks
+# Priority: ⭐⭐ Important
+[[queues.producers]]
+binding = "MINDAGENT_QUEUE"
+queue = "mindagent-execution"
+
+[[queues.consumers]]
+queue = "mindagent-execution"
+max_batch_size = 10
+max_batch_timeout = 30
+max_retries = 3
+dead_letter_queue = "mindagent-dlq"
+
+# Workflow: Cognitive Pipelines
+# OpenCog Component: Multi-step reasoning, planning sequences
+# Priority: ⭐⭐ Important
+[[workflows]]
+binding = "COGNITIVE_WORKFLOW"
+name = "cognitive-pipeline"
+class_name = "CognitiveWorkflow"
+
+# Service Binding: Inter-AtomSpace Communication
+# OpenCog Component: Distributed AtomSpace (DAS) networking
+# Priority: ⭐⭐ Important
+[[services]]
+binding = "ATOMSPACE_NETWORK"
+service = "flarecog-atomspace"
+environment = "production"
+
+# Dispatch Namespace: Multi-Tenant Routing
+# OpenCog Component: Tenant isolation, namespace separation
+# Priority: ⭐⭐ Important
+[[dispatch_namespaces]]
+binding = "DISPATCH"
+namespace = "flarecog-tenants"
+# Route pattern: {tenant-id}.flarecog.yourdomain.com
+
+# ============================================================================
+# OPTIONAL BINDINGS - Performance optimization
+# ============================================================================
+
+# KV Namespace: Fast Metadata Cache
+# OpenCog Component: Attention value cache, atom lookup index
+# Priority: ⭐ Optional
+[[kv_namespaces]]
+binding = "ATTENTION_CACHE"
+id = "YOUR_KV_NAMESPACE_ID"
+# TTL: 1 hour for STI/LTI values
+# Use for: High-STI atom caching, existence checks
+
+# Rate Limiter: Cognitive Load Management
+# OpenCog Component: Resource allocation, attention economy
+# Priority: ⭐ Optional
+[[unsafe.bindings]]
+name = "RATE_LIMITER"
+type = "ratelimit"
+namespace_id = "YOUR_RATELIMIT_NAMESPACE_ID"
+# Limits:
+# - Pattern matching: 100 queries/minute per AtomSpace
+# - Atom creation: 1000 atoms/minute per AtomSpace
+# - MindAgent execution: 10 agents/minute per AtomSpace
+
+# Analytics Engine: ECAN Monitoring
+# OpenCog Component: Economic Attention Networks metrics
+# Priority: ⭐ Optional
+[[analytics_engine_datasets]]
+binding = "ECAN_METRICS"
+dataset = "ecan-analytics"
+# Metrics: STI/LTI distribution, cognitive load, resource utilization
+
+# ============================================================================
+# ENVIRONMENT VARIABLES
+# ============================================================================
+
+[env.production.vars]
+# System configuration
+ENVIRONMENT = "production"
+LOG_LEVEL = "info"
+ENABLE_DEBUG = "false"
+
+# AtomSpace configuration
+MAX_ATOMSPACES_PER_TENANT = "100"
+MAX_ATOMS_PER_ATOMSPACE = "30000000"  # 30 million
+MAX_LINKS_PER_ATOMSPACE = "60000000"  # 60 million
+DEFAULT_STI = "50"
+DEFAULT_LTI = "50"
+
+# Storage tier thresholds
+HOT_TIER_STI_THRESHOLD = "50"  # Memory cache
+WARM_TIER_STI_THRESHOLD = "10"  # DO storage / HyperDrive
+COLD_TIER_LTI_THRESHOLD = "10"  # R2 archival
+ARCHIVAL_INACTIVITY_DAYS = "30"
+
+# ECAN (Economic Attention Networks) configuration
+ECAN_UPDATE_FREQUENCY_MS = "1000"  # 1 second
+ATTENTION_BANK_SIZE = "200000"  # Max atoms in working set
+STI_DECAY_RATE = "0.01"  # Per update cycle
+LTI_GROWTH_RATE = "0.001"  # Per access
+
+# Pattern matching configuration
+PATTERN_MATCH_TIMEOUT_MS = "5000"
+MAX_PATTERN_RESULTS = "1000"
+ENABLE_SEMANTIC_MATCHING = "true"
+SEMANTIC_SIMILARITY_THRESHOLD = "0.8"
+
+# Distributed query configuration
+ENABLE_CROSS_ATOMSPACE_QUERIES = "true"
+QUERY_TIMEOUT_MS = "10000"
+MAX_PARALLEL_QUERIES = "50"
+
+# MindAgent configuration
+MINDAGENT_EXECUTION_TIMEOUT_MS = "60000"  # 1 minute
+ENABLE_IMPORTANCE_UPDATING = "true"
+ENABLE_FORGETTING = "true"
+ENABLE_PLN_REASONING = "true"
+
+# Workflow configuration
+WORKFLOW_MAX_DURATION_MS = "3600000"  # 1 hour
+WORKFLOW_STEP_TIMEOUT_MS = "300000"  # 5 minutes
+
+# Cost optimization
+ENABLE_TIERED_STORAGE = "true"
+ENABLE_ATTENTION_CACHING = "true"
+ENABLE_BATCH_OPERATIONS = "true"
+ENABLE_LAZY_LOADING = "true"
+
+# Monitoring and observability
+ENABLE_ANALYTICS = "true"
+ENABLE_TRACING = "false"  # Enable for debugging only
+SENTRY_DSN = ""  # Optional: Sentry error tracking
+
+# External integrations
+ENABLE_WIKIPEDIA_INTEGRATION = "false"
+ENABLE_CONCEPTNET_INTEGRATION = "false"
+ENABLE_WIKIDATA_INTEGRATION = "false"
+
+# ============================================================================
+# SECRETS (Managed via Cloudflare Dashboard or wrangler secret)
+# ============================================================================
+
+# External API keys (set via: wrangler secret put SECRET_NAME)
+# OPENAI_API_KEY - For external LLM fallback
+# ANTHROPIC_API_KEY - For Claude reasoning
+# WIKIPEDIA_API_KEY - For knowledge base integration
+# CONCEPTNET_API_KEY - For semantic networks
+# SENTRY_DSN - For error tracking
+
+# ============================================================================
+# CRON TRIGGERS - Scheduled MindAgents
+# ============================================================================
+
+# Forgetting Agent: Archive low-importance atoms
+[[triggers.crons]]
+cron = "0 2 * * *"  # Daily at 2 AM
+# Executes: ForgettingAgent (archives atoms with LTI < 10)
+
+# Importance Updating Agent: Recompute STI/LTI
+[[triggers.crons]]
+cron = "*/15 * * * *"  # Every 15 minutes
+# Executes: ImportanceUpdatingAgent (ECAN attention allocation)
+
+# Cleanup Agent: Remove expired cache entries
+[[triggers.crons]]
+cron = "0 */6 * * *"  # Every 6 hours
+# Executes: CleanupAgent (purge KV cache, compact DO storage)
+
+# ============================================================================
+# OBSERVABILITY
+# ============================================================================
+
+[observability]
+enabled = true
+head_sampling_rate = 0.01  # Sample 1% of requests
+
+# ============================================================================
+# LIMITS AND QUOTAS
+# ============================================================================
+
+[limits]
+cpu_ms = 50  # CPU time per request (default: 50ms)
+# Note: Durable Objects have no CPU limit for internal operations
+
+# ============================================================================
+# DEPLOYMENT ENVIRONMENTS
+# ============================================================================
+
+[env.development]
+name = "flarecog-dev"
+vars = { ENVIRONMENT = "development", LOG_LEVEL = "debug", ENABLE_DEBUG = "true" }
+
+[env.staging]
+name = "flarecog-staging"
+vars = { ENVIRONMENT = "staging", LOG_LEVEL = "info", ENABLE_DEBUG = "true" }
+
+[env.production]
+name = "flarecog-production"
+vars = { ENVIRONMENT = "production", LOG_LEVEL = "info", ENABLE_DEBUG = "false" }
+
+# ============================================================================
+# COMPATIBILITY FLAGS
+# ============================================================================
+
+[compatibility_flags]
+nodejs_compat = true  # Enable Node.js APIs
+durable_object_alarms = true  # Enable DO alarms for scheduled tasks
+vectorize_query_embeddings = true  # Enable Vectorize query API
+
+# ============================================================================
+# NOTES
+# ============================================================================
+
+# 1. Replace YOUR_* placeholders with actual IDs from Cloudflare Dashboard
+# 2. Set secrets via: wrangler secret put SECRET_NAME
+# 3. Initialize D1 database with schema from DEPLOYMENT_GUIDE.md
+# 4. Create Vectorize index: wrangler vectorize create atom-embeddings --dimensions=768 --metric=cosine
+# 5. Deploy: wrangler deploy --env production
+# 6. Monitor: wrangler tail --env production
+# 7. Test: wrangler dev --remote --env development
+
+# For detailed deployment instructions, see: DEPLOYMENT_GUIDE.md
+# For architecture overview, see: CLOUDFLARE_OPENCOG_MAPPING.md
+# For cost analysis, see: constraints_analysis.md

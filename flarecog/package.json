@@ -1,0 +1,50 @@
+{
+	"name": "flarecog",
+	"description": "FlareCog - Unified OpenCog-Cloudflare cognitive architecture for advanced AGI applications at the edge",
+	"private": true,
+	"cloudflare": {
+		"label": "Cogflare OpenCog Platform",
+		"products": [
+			"Workers",
+			"Durable Objects",
+			"D1",
+			"KV",
+			"Workers AI"
+		],
+		"categories": [
+			"ai",
+			"storage"
+		],
+		"preview_icon_url": "https://imagedelivery.net/wSMYJvS3Xw-n339CbDyDIA/b1123d34-c3a4-446c-6574-8b67c7ac4400/public",
+		"preview_image_url": "https://imagedelivery.net/wSMYJvS3Xw-n339CbDyDIA/5012f8d4-59bc-4f1d-fb7e-7e6269d3da00/preview",
+		"publish": true,
+		"bindings": {
+			"ATOMSPACE_MODE": {
+				"description": "AtomSpace operation mode: 'memory' for development, 'persistent' for production"
+			}
+		}
+	},
+	"scripts": {
+		"build": "tsc",
+		"cf-typegen": "wrangler types",
+		"check": "tsc && wrangler deploy --dry-run",
+		"deploy": "wrangler deploy",
+		"dev": "wrangler dev",
+		"start": "wrangler dev",
+		"test": "vitest"
+	},
+	"devDependencies": {
+		"@cloudflare/vitest-pool-workers": "^0.8.44",
+		"@cloudflare/workers-types": "^4.20250425.0",
+		"@types/node": "^24.0.4",
+		"tsx": "^4.20.4",
+		"typescript": "^5.9.2",
+		"vitest": "^3.2.4",
+		"wrangler": "^4.29.1"
+	},
+	"dependencies": {
+		"hono": "^4.8.2",
+		"nanoid": "^5.1.5",
+		"zod": "^3.25.67"
+	}
+}

@@ -1,0 +1,94 @@
+---
+interface Props {
+	title: string;
+}
+
+const { title } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="description" content="FlareCog Platform Admin Dashboard" />
+		<meta name="viewport" content="width=device-width" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta name="generator" content={Astro.generator} />
+		<title>{title} - FlareCog Admin</title>
+	</head>
+	<body>
+		<div class="min-h-screen bg-background">
+			<nav class="border-b">
+				<div class="container mx-auto px-4 py-4">
+					<div class="flex items-center justify-between">
+						<div class="flex items-center space-x-8">
+							<a href="/" class="text-2xl font-bold text-primary">
+								FlareCog Admin
+							</a>
+							<div class="flex space-x-4">
+								<a
+									href="/admin/tenants"
+									class="text-sm font-medium hover:text-primary transition-colors"
+								>
+									Tenants
+								</a>
+								<a
+									href="/admin/metrics"
+									class="text-sm font-medium hover:text-primary transition-colors"
+								>
+									Metrics
+								</a>
+								<a
+									href="/admin/billing"
+									class="text-sm font-medium hover:text-primary transition-colors"
+								>
+									Billing
+								</a>
+							</div>
+						</div>
+						<div class="flex items-center space-x-4">
+							<span class="text-sm text-muted-foreground">Admin</span>
+						</div>
+					</div>
+				</div>
+			</nav>
+			<main class="container mx-auto px-4 py-8">
+				<slot />
+			</main>
+		</div>
+	</body>
+</html>
+
+<style is:global>
+	:root {
+		--background: 0 0% 100%;
+		--foreground: 222.2 84% 4.9%;
+		--card: 0 0% 100%;
+		--card-foreground: 222.2 84% 4.9%;
+		--popover: 0 0% 100%;
+		--popover-foreground: 222.2 84% 4.9%;
+		--primary: 221.2 83.2% 53.3%;
+		--primary-foreground: 210 40% 98%;
+		--secondary: 210 40% 96.1%;
+		--secondary-foreground: 222.2 47.4% 11.2%;
+		--muted: 210 40% 96.1%;
+		--muted-foreground: 215.4 16.3% 46.9%;
+		--accent: 210 40% 96.1%;
+		--accent-foreground: 222.2 47.4% 11.2%;
+		--destructive: 0 84.2% 60.2%;
+		--destructive-foreground: 210 40% 98%;
+		--border: 214.3 31.8% 91.4%;
+		--input: 214.3 31.8% 91.4%;
+		--ring: 221.2 83.2% 53.3%;
+		--radius: 0.5rem;
+	}
+
+	* {
+		border-color: hsl(var(--border));
+	}
+
+	body {
+		color: hsl(var(--foreground));
+		background: hsl(var(--background));
+	}
+</style>
