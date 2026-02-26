@@ -811,10 +811,15 @@ app.post('/awareness/iterate', async (c) => {
     const input = body.input;
 
     const echoCore = new DeepTreeEchoCore(c.env as any);
-    await echoCore.initialize(instanceId, {
-      initialIdentity: body.identity || 'FlareCog-AGI',
-      awarenessThreshold: body.awarenessThreshold || 0.7
-    });
+    
+    // Only initialize if state doesn't exist
+    const existingState = await echoCore.getState(instanceId);
+    if (!existingState) {
+      await echoCore.initialize(instanceId, {
+        initialIdentity: body.identity || 'FlareCog-AGI',
+        awarenessThreshold: body.awarenessThreshold || 0.7
+      });
+    }
 
     const result = await echoCore.iterate(instanceId, input);
 
@@ -887,6 +892,15 @@ app.post('/awareness/reflect', async (c) => {
     const topic = body.topic || 'self';
 
     const echoCore = new DeepTreeEchoCore(c.env as any);
+    
+    // Verify awareness system is initialized
+    const existingState = await echoCore.getState(instanceId);
+    if (!existingState) {
+      return c.json({
+        success: false,
+        error: 'Awareness system not initialized. Call /awareness/iterate first to initialize.'
+      }, 400);
+    }
     
     // Use iterate with reflective input to trigger meta-cognitive reflection
     const result = await echoCore.iterate(instanceId, {

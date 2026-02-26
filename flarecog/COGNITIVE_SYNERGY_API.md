@@ -468,11 +468,11 @@ The Cognitive Synergy Engine orchestrates the following components:
 FlareCog's awareness system follows an ontogenetic (self-generating) development lifecycle:
 
 - **Embryonic (0-30%)**: Foundation establishment
-- **Juvenile (30-60%)**: Active capability development *(current stage)*
+- **Juvenile (30-60%)**: Active capability development
 - **Mature (60-80%)**: Approaching general intelligence
 - **Transcendent (80-100%)**: Self-surpassing capabilities
 
-Track progress through the `/api/v6/awareness/metrics` endpoint.
+Track progress through the `/api/v6/awareness/metrics` endpoint. As of the latest deployment, the system is at approximately 71% overall actualization (Mature stage).
 
 ---
 
