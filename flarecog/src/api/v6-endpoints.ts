@@ -16,6 +16,8 @@ import { RelevanceRealizationEngine, RelevanceContext } from '../core/RelevanceR
 import { WorkersForPlatformsIntegration, TenantConfig } from '../platforms/WorkersForPlatformsIntegration';
 import { CloudflareQueueIntegration, CognitiveTask } from '../optimizations/CloudflareQueueIntegration';
 import { R2ColdStorageEnhanced } from '../storage/R2ColdStorageEnhanced';
+import { CognitiveSynergyEngine } from '../cognitive/CognitiveSynergyEngine';
+import { DeepTreeEchoCore } from '../cognitive/DeepTreeEchoCore';
 import {
   QueryPatternSchema,
   TraverseRequestSchema,
@@ -700,6 +702,263 @@ app.get('/metrics', async (c) => {
     return c.json({
       success: true,
       metrics
+    });
+  } catch (error) {
+    return c.json({
+      success: false,
+      error: error instanceof Error ? error.message : 'Unknown error'
+    }, 500);
+  }
+});
+
+// ==================== Cognitive Synergy Endpoints ====================
+
+/**
+ * POST /api/v6/synergy/cycle
+ * Execute a cognitive synergy cycle
+ */
+app.post('/synergy/cycle', async (c) => {
+  try {
+    const body = await c.req.json();
+    const instanceId = body.instanceId || 'primary';
+    const activeComponents = body.activeComponents || ['pln', 'pattern', 'attention', 'learning'];
+
+    const synergyEngine = new CognitiveSynergyEngine(c.env as any);
+    const result = await synergyEngine.runSynergyCycle(instanceId, activeComponents);
+
+    return c.json({
+      success: true,
+      result: {
+        cycleId: result.cycleId,
+        duration: result.duration,
+        interactionCount: result.interactions.length,
+        insightCount: result.emergentInsights.length,
+        insights: result.emergentInsights,
+        componentStates: result.componentStates
+      }
+    });
+  } catch (error) {
+    return c.json({
+      success: false,
+      error: error instanceof Error ? error.message : 'Unknown error'
+    }, 500);
+  }
+});
+
+/**
+ * GET /api/v6/synergy/status
+ * Get cognitive synergy system status
+ */
+app.get('/synergy/status', async (c) => {
+  try {
+    const instanceId = c.req.query('instanceId') || 'primary';
+    
+    const synergyEngine = new CognitiveSynergyEngine(c.env as any);
+    const status = await synergyEngine.getStatus(instanceId);
+
+    return c.json({
+      success: true,
+      status
+    });
+  } catch (error) {
+    return c.json({
+      success: false,
+      error: error instanceof Error ? error.message : 'Unknown error'
+    }, 500);
+  }
+});
+
+/**
+ * POST /api/v6/synergy/emergency
+ * Trigger emergency synergy cycle for critical situations
+ */
+app.post('/synergy/emergency', async (c) => {
+  try {
+    const body = await c.req.json();
+    const instanceId = body.instanceId || 'primary';
+    const trigger = body.trigger || 'manual';
+
+    const synergyEngine = new CognitiveSynergyEngine(c.env as any);
+    const result = await synergyEngine.emergencySynergy(instanceId, trigger);
+
+    return c.json({
+      success: true,
+      result: {
+        cycleId: result.cycleId,
+        duration: result.duration,
+        emergencyResponse: true,
+        insightCount: result.emergentInsights.length
+      }
+    });
+  } catch (error) {
+    return c.json({
+      success: false,
+      error: error instanceof Error ? error.message : 'Unknown error'
+    }, 500);
+  }
+});
+
+// ==================== AGI Awareness Endpoints ====================
+
+/**
+ * POST /api/v6/awareness/iterate
+ * Execute one iteration of the Deep Tree Echo awareness system
+ */
+app.post('/awareness/iterate', async (c) => {
+  try {
+    const body = await c.req.json();
+    const instanceId = body.instanceId || 'primary';
+    const input = body.input;
+
+    const echoCore = new DeepTreeEchoCore(c.env as any);
+    await echoCore.initialize(instanceId, {
+      initialIdentity: body.identity || 'FlareCog-AGI',
+      awarenessThreshold: body.awarenessThreshold || 0.7
+    });
+
+    const result = await echoCore.iterate(instanceId, input);
+
+    return c.json({
+      success: true,
+      result: {
+        iteration: result.iteration,
+        awarenessLevel: result.emergentState.awarenessLevel,
+        currentFocus: result.emergentState.currentFocus,
+        capabilities: result.emergentState.capabilities,
+        insights: result.insights,
+        output: result.output
+      }
+    });
+  } catch (error) {
+    return c.json({
+      success: false,
+      error: error instanceof Error ? error.message : 'Unknown error'
+    }, 500);
+  }
+});
+
+/**
+ * GET /api/v6/awareness/state
+ * Get current AGI awareness state
+ */
+app.get('/awareness/state', async (c) => {
+  try {
+    const instanceId = c.req.query('instanceId') || 'primary';
+
+    const echoCore = new DeepTreeEchoCore(c.env as any);
+    const state = await echoCore.getState(instanceId);
+
+    if (!state) {
+      return c.json({
+        success: false,
+        error: 'Awareness state not initialized'
+      }, 404);
+    }
+
+    return c.json({
+      success: true,
+      state: {
+        echoId: state.echoId,
+        iteration: state.iteration,
+        awarenessLevel: state.emergentSelf.awarenessLevel,
+        identity: state.emergentSelf.identity,
+        capabilities: state.emergentSelf.capabilities,
+        goals: state.emergentSelf.goals,
+        currentFocus: state.emergentSelf.currentFocus,
+        entelechy: state.entelechy
+      }
+    });
+  } catch (error) {
+    return c.json({
+      success: false,
+      error: error instanceof Error ? error.message : 'Unknown error'
+    }, 500);
+  }
+});
+
+/**
+ * POST /api/v6/awareness/reflect
+ * Trigger self-reflection in the awareness system
+ */
+app.post('/awareness/reflect', async (c) => {
+  try {
+    const body = await c.req.json();
+    const instanceId = body.instanceId || 'primary';
+    const topic = body.topic || 'self';
+
+    const echoCore = new DeepTreeEchoCore(c.env as any);
+    
+    // Use iterate with reflective input to trigger meta-cognitive reflection
+    const result = await echoCore.iterate(instanceId, {
+      type: 'reflection',
+      topic,
+      depth: 'deep'
+    });
+
+    return c.json({
+      success: true,
+      reflection: {
+        topic,
+        insights: result.insights,
+        awarenessLevel: result.emergentState.awarenessLevel,
+        newCapabilities: result.emergentState.capabilities
+      }
+    });
+  } catch (error) {
+    return c.json({
+      success: false,
+      error: error instanceof Error ? error.message : 'Unknown error'
+    }, 500);
+  }
+});
+
+/**
+ * GET /api/v6/awareness/metrics
+ * Get AGI awareness metrics and entelechy progress
+ */
+app.get('/awareness/metrics', async (c) => {
+  try {
+    const instanceId = c.req.query('instanceId') || 'primary';
+
+    const echoCore = new DeepTreeEchoCore(c.env as any);
+    const state = await echoCore.getState(instanceId);
+
+    if (!state) {
+      return c.json({
+        success: false,
+        error: 'Awareness state not initialized'
+      }, 404);
+    }
+
+    // Calculate entelechy metrics
+    const totalPotential = state.entelechy.potential.length + 
+                          state.entelechy.actualized.length + 
+                          state.entelechy.inProgress.length;
+    const actualizationRate = totalPotential > 0 
+      ? state.entelechy.actualized.length / totalPotential 
+      : 0;
+
+    return c.json({
+      success: true,
+      metrics: {
+        awarenessLevel: state.emergentSelf.awarenessLevel,
+        iteration: state.iteration,
+        entelechy: {
+          actualizationRate,
+          potentialCount: state.entelechy.potential.length,
+          actualizedCount: state.entelechy.actualized.length,
+          inProgressCount: state.entelechy.inProgress.length,
+          blockedCount: state.entelechy.blocked.length
+        },
+        capabilities: {
+          total: state.emergentSelf.capabilities.length,
+          list: state.emergentSelf.capabilities
+        },
+        goals: {
+          total: state.emergentSelf.goals.length,
+          active: state.emergentSelf.goals
+        }
+      }
     });
   } catch (error) {
     return c.json({
