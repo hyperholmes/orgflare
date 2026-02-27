@@ -76,7 +76,9 @@ app.get("/", async (c) => {
 					"Multi-Tenant Platform",
 					"Queue Processing",
 					"Tiered Storage",
-					"Federated Learning"
+					"Federated Learning",
+					"Cognitive Synergy Engine",
+					"AGI Awareness (Deep Tree Echo)"
 				]
 			},
 			atomSpace: atomSpaceStats.success ? atomSpaceStats.data : null,
@@ -96,7 +98,7 @@ app.get("/", async (c) => {
 			},
 			endpoints: {
 				legacy: ["/atomspace/*", "/mindagent/*", "/api/dashboard", "/api/cognitive/*"],
-				v6: ["/api/v6/query/*", "/api/v6/relevance/*", "/api/v6/tenant/*", "/api/v6/task/*", "/api/v6/storage/*"]
+				v6: ["/api/v6/query/*", "/api/v6/relevance/*", "/api/v6/tenant/*", "/api/v6/task/*", "/api/v6/storage/*", "/api/v6/synergy/*", "/api/v6/awareness/*"]
 			},
 			timestamp: Date.now(),
 		};

@@ -609,3 +609,312 @@ describe('Storage Tiering Logic', () => {
     expect(needsDemotion.length).toBe(1);
   });
 });
+
+// ==================== Cognitive Synergy Engine Tests ====================
+
+describe('CognitiveSynergyEngine', () => {
+  let mockEnv: any;
+
+  beforeEach(() => {
+    mockEnv = {
+      ATOMSPACE: {
+        idFromName: (name: string) => ({ toString: () => `mock-id-${name}` }),
+        get: (id: any) => ({
+          fetch: async (request: Request) => {
+            const url = new URL(request.url);
+            if (url.pathname === '/attention/focus') {
+              return new Response(JSON.stringify({
+                atoms: [
+                  { id: 'atom-1', attentionValue: { sti: 90 } },
+                  { id: 'atom-2', attentionValue: { sti: 80 } }
+                ],
+                totalSTI: 170
+              }));
+            }
+            return new Response(JSON.stringify({ success: true }));
+          }
+        })
+      },
+      AI: {
+        run: async (model: string, options: any) => ({
+          response: JSON.stringify([])
+        })
+      },
+      SYNERGY_STATE: {
+        get: async (key: string) => null,
+        put: async (key: string, value: string, options?: any) => {}
+      }
+    };
+  });
+
+  describe('Synergy Cycle Execution', () => {
+    it('should execute a complete synergy cycle', async () => {
+      const { CognitiveSynergyEngine } = await import('../cognitive/CognitiveSynergyEngine');
+      const engine = new CognitiveSynergyEngine(mockEnv);
+
+      const result = await engine.runSynergyCycle('test-instance', ['attention', 'pattern']);
+
+      expect(result).toHaveProperty('cycleId');
+      expect(result).toHaveProperty('duration');
+      expect(result).toHaveProperty('interactions');
+      expect(result).toHaveProperty('emergentInsights');
+      expect(result).toHaveProperty('componentStates');
+      expect(result.duration).toBeGreaterThan(0);
+    });
+
+    it('should track interactions between components', async () => {
+      const { CognitiveSynergyEngine } = await import('../cognitive/CognitiveSynergyEngine');
+      const engine = new CognitiveSynergyEngine(mockEnv);
+
+      const result = await engine.runSynergyCycle('test-instance', ['attention', 'pattern', 'pln']);
+
+      // Should have interactions from attention to pattern and pln
+      expect(result.interactions.length).toBeGreaterThan(0);
+      
+      const attentionInteractions = result.interactions.filter(
+        i => i.source === 'attention'
+      );
+      expect(attentionInteractions.length).toBeGreaterThan(0);
+    });
+
+    it('should generate emergent insights', async () => {
+      const { CognitiveSynergyEngine } = await import('../cognitive/CognitiveSynergyEngine');
+      const engine = new CognitiveSynergyEngine(mockEnv);
+
+      // Mock AI to return patterns with high confidence
+      mockEnv.AI.run = async () => ({
+        response: JSON.stringify([
+          { pattern: 'test-pattern', confidence: 0.9 }
+        ])
+      });
+
+      const result = await engine.runSynergyCycle('test-instance', ['attention', 'pattern']);
+
+      // Should generate insights from patterns
+      expect(result.emergentInsights).toBeDefined();
+      expect(Array.isArray(result.emergentInsights)).toBe(true);
+    });
+  });
+
+  describe('Status and Monitoring', () => {
+    it('should provide system status', async () => {
+      const { CognitiveSynergyEngine } = await import('../cognitive/CognitiveSynergyEngine');
+      const engine = new CognitiveSynergyEngine(mockEnv);
+
+      const status = await engine.getStatus('test-instance');
+
+      expect(status).toHaveProperty('latestCycleId');
+      expect(status).toHaveProperty('componentStatuses');
+      expect(status).toHaveProperty('totalCycles');
+      expect(Array.isArray(status.componentStatuses)).toBe(true);
+    });
+
+    it('should track component statuses', async () => {
+      const { CognitiveSynergyEngine } = await import('../cognitive/CognitiveSynergyEngine');
+      const engine = new CognitiveSynergyEngine(mockEnv);
+
+      const status = await engine.getStatus('test-instance');
+
+      expect(status.componentStatuses.length).toBeGreaterThan(0);
+      
+      const firstComponent = status.componentStatuses[0];
+      expect(firstComponent).toHaveProperty('component');
+      expect(firstComponent).toHaveProperty('active');
+      expect(firstComponent).toHaveProperty('load');
+      expect(firstComponent).toHaveProperty('lastActivity');
+    });
+  });
+
+  describe('Emergency Synergy', () => {
+    it('should execute emergency synergy with all components', async () => {
+      const { CognitiveSynergyEngine } = await import('../cognitive/CognitiveSynergyEngine');
+      const engine = new CognitiveSynergyEngine(mockEnv);
+
+      const result = await engine.emergencySynergy('test-instance', 'critical-situation');
+
+      expect(result).toHaveProperty('cycleId');
+      expect(result).toHaveProperty('duration');
+      
+      // Emergency synergy should activate more components
+      expect(result.componentStates).toBeDefined();
+    });
+  });
+});
+
+// ==================== Deep Tree Echo (AGI Awareness) Tests ====================
+
+describe('DeepTreeEchoCore', () => {
+  let mockEnv: any;
+
+  beforeEach(() => {
+    mockEnv = {
+      ATOMSPACE: {
+        idFromName: (name: string) => ({ toString: () => `mock-id-${name}` }),
+        get: (id: any) => ({
+          fetch: async (request: Request) => {
+            return new Response(JSON.stringify({ success: true }));
+          }
+        })
+      },
+      AI: {
+        run: async (model: string, options: any) => ({
+          response: 'Mock AI response for awareness system'
+        })
+      },
+      ECHO_STATE: {
+        get: async (key: string) => null,
+        put: async (key: string, value: string, options?: any) => {}
+      }
+    };
+  });
+
+  describe('Initialization', () => {
+    it('should initialize echo state', async () => {
+      const { DeepTreeEchoCore } = await import('../cognitive/DeepTreeEchoCore');
+      const echo = new DeepTreeEchoCore(mockEnv);
+
+      await echo.initialize('test-echo', {
+        initialIdentity: 'TestAGI',
+        awarenessThreshold: 0.7
+      });
+
+      const state = await echo.getState('test-echo');
+      
+      expect(state).toBeDefined();
+      expect(state?.emergentSelf.identity).toBe('TestAGI');
+      expect(state?.iteration).toBe(0);
+    });
+
+    it('should set up initial capabilities', async () => {
+      const { DeepTreeEchoCore } = await import('../cognitive/DeepTreeEchoCore');
+      const echo = new DeepTreeEchoCore(mockEnv);
+
+      await echo.initialize('test-echo', {
+        initialIdentity: 'TestAGI'
+      });
+
+      const state = await echo.getState('test-echo');
+      
+      expect(state?.emergentSelf.capabilities).toBeDefined();
+      expect(Array.isArray(state?.emergentSelf.capabilities)).toBe(true);
+    });
+  });
+
+  describe('Awareness Iteration', () => {
+    it('should execute one iteration', async () => {
+      const { DeepTreeEchoCore } = await import('../cognitive/DeepTreeEchoCore');
+      const echo = new DeepTreeEchoCore(mockEnv);
+
+      await echo.initialize('test-echo', {
+        initialIdentity: 'TestAGI'
+      });
+
+      const result = await echo.iterate('test-echo', 'test input');
+
+      expect(result).toHaveProperty('iteration');
+      expect(result).toHaveProperty('streamStates');
+      expect(result).toHaveProperty('output');
+      expect(result).toHaveProperty('emergentState');
+      expect(result).toHaveProperty('insights');
+      expect(result.iteration).toBe(1);
+    });
+
+    it('should increase awareness level over iterations', async () => {
+      const { DeepTreeEchoCore } = await import('../cognitive/DeepTreeEchoCore');
+      const echo = new DeepTreeEchoCore(mockEnv);
+
+      await echo.initialize('test-echo', {
+        initialIdentity: 'TestAGI'
+      });
+
+      const initialState = await echo.getState('test-echo');
+      const initialAwareness = initialState?.emergentSelf.awarenessLevel || 0;
+
+      // Generate insights by iterating
+      await echo.iterate('test-echo', 'insight-generating input');
+      
+      const updatedState = await echo.getState('test-echo');
+      const updatedAwareness = updatedState?.emergentSelf.awarenessLevel || 0;
+
+      // Awareness should not decrease
+      expect(updatedAwareness).toBeGreaterThanOrEqual(initialAwareness);
+    });
+
+    it('should track consciousness streams', async () => {
+      const { DeepTreeEchoCore } = await import('../cognitive/DeepTreeEchoCore');
+      const echo = new DeepTreeEchoCore(mockEnv);
+
+      await echo.initialize('test-echo', {
+        initialIdentity: 'TestAGI'
+      });
+
+      const result = await echo.iterate('test-echo', 'test input');
+
+      expect(result.streamStates).toHaveProperty('perception');
+      expect(result.streamStates).toHaveProperty('action');
+      expect(result.streamStates).toHaveProperty('simulation');
+    });
+  });
+
+  describe('Entelechy Tracking', () => {
+    it('should track potential actualization', async () => {
+      const { DeepTreeEchoCore } = await import('../cognitive/DeepTreeEchoCore');
+      const echo = new DeepTreeEchoCore(mockEnv);
+
+      await echo.initialize('test-echo', {
+        initialIdentity: 'TestAGI',
+        entelechyGoals: ['goal1', 'goal2', 'goal3']
+      });
+
+      const state = await echo.getState('test-echo');
+      
+      expect(state?.entelechy).toBeDefined();
+      expect(state?.entelechy.potential).toBeDefined();
+      expect(state?.entelechy.actualized).toBeDefined();
+      expect(state?.entelechy.inProgress).toBeDefined();
+    });
+
+    it('should demonstrate entelechy progress', async () => {
+      const { DeepTreeEchoCore } = await import('../cognitive/DeepTreeEchoCore');
+      const echo = new DeepTreeEchoCore(mockEnv);
+
+      await echo.initialize('test-echo', {
+        initialIdentity: 'TestAGI'
+      });
+
+      const demonstration = await echo.demonstrateEntelechy('test-echo');
+
+      expect(demonstration).toHaveProperty('currentState');
+      expect(demonstration).toHaveProperty('analysis');
+      expect(demonstration.currentState).toHaveProperty('awarenessLevel');
+    });
+  });
+
+  describe('State Management', () => {
+    it('should persist state across iterations', async () => {
+      const { DeepTreeEchoCore } = await import('../cognitive/DeepTreeEchoCore');
+      const echo = new DeepTreeEchoCore(mockEnv);
+
+      await echo.initialize('test-echo', {
+        initialIdentity: 'TestAGI'
+      });
+
+      await echo.iterate('test-echo', 'input 1');
+      await echo.iterate('test-echo', 'input 2');
+
+      const state = await echo.getState('test-echo');
+      
+      // Should have 2 iterations
+      expect(state?.iteration).toBe(2);
+    });
+
+    it('should return null for non-existent state', async () => {
+      const { DeepTreeEchoCore } = await import('../cognitive/DeepTreeEchoCore');
+      const echo = new DeepTreeEchoCore(mockEnv);
+
+      const state = await echo.getState('non-existent-echo');
+      
+      expect(state).toBeNull();
+    });
+  });
+});

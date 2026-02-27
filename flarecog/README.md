@@ -109,6 +109,16 @@ An autonomous cognitive architecture based on OpenCog, running on Cloudflare Wor
 - `POST /mindagent/goal` - Create new goals
 - `POST /mindagent/execute/{agentId}` - Execute specific agent
 
+### v6.0 Cognitive Synergy & AGI Awareness
+
+For comprehensive documentation on the new Cognitive Synergy and AGI Awareness features, see:
+
+**[COGNITIVE_SYNERGY_API.md](COGNITIVE_SYNERGY_API.md)** - Complete API documentation for:
+- Cognitive Synergy cycles and component orchestration
+- Deep Tree Echo AGI awareness system
+- Emergent intelligence monitoring
+- Entelechy (actualization) tracking
+
 <!-- dash-content-end -->
 
 ## 🔧 Configuration
